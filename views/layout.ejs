@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <meta name="description" content="AnimeHub - Portal informasi anime terlengkap dengan berita terbaru, jadwal tayang, dan review anime">
+    <meta name="keywords" content="anime, manga, otaku, anime news, anime schedule, anime review">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-play-circle-fill text-primary me-2"></i>
+                AnimeHub
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house-door me-1"></i>Beranda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/anime/schedule">
+                            <i class="bi bi-calendar-event me-1"></i>Jadwal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/news">
+                            <i class="bi bi-newspaper me-1"></i>Berita
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    <!-- Search Form -->
+                    <form class="d-flex me-3" action="/search" method="GET">
+                        <div class="input-group">
+                            <input class="form-control form-control-sm" type="search" name="q" placeholder="Cari anime..." value="<%= typeof query !== 'undefined' ? query : '' %>">
+                            <button class="btn btn-outline-primary btn-sm" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="btn btn-outline-secondary btn-sm me-2" id="themeToggle">
+                        <i class="bi bi-moon-fill"></i>
+                    </button>
+                    
+                    <!-- Admin Link -->
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i><%= user.username %>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin/dashboard">Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="/admin/logout" method="POST" class="d-inline">
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    <% } else { %>
+                        <a href="/admin/login" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-shield-lock me-1"></i>Admin
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-primary">
+                        <i class="bi bi-play-circle-fill me-2"></i>AnimeHub
+                    </h5>
+                    <p class="text-muted">Portal informasi anime terlengkap dengan berita terbaru, jadwal tayang, dan komunitas otaku Indonesia.</p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Menu</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-muted text-decoration-none">Beranda</a></li>
+                        <li><a href="/anime/schedule" class="text-muted text-decoration-none">Jadwal Anime</a></li>
+                        <li><a href="/news" class="text-muted text-decoration-none">Berita</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>Kontak</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-envelope me-2"></i>info@animehub.com</li>
+                        <li><i class="bi bi-twitter me-2"></i>@AnimeHubID</li>
+                        <li><i class="bi bi-instagram me-2"></i>@animehub.id</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">&copy; 2024 AnimeHub. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-muted">Powered by Jikan API</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+</body>
+</html>
+

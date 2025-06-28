@@ -1,0 +1,154 @@
+<%- include('../layout', { body: `
+<div class="container mt-4">
+    <div class="anime-detail-header">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 mb-4">
+                <img src="<%= anime.images.jpg.large_image_url %>" 
+                     alt="<%= anime.title %>" 
+                     class="anime-poster w-100">
+            </div>
+            <div class="col-lg-9 col-md-8">
+                <div class="anime-info">
+                    <h1><%= anime.title %></h1>
+                    <% if (anime.title_english && anime.title_english !== anime.title) { %>
+                        <h5 class="text-muted mb-3"><%= anime.title_english %></h5>
+                    <% } %>
+                    
+                    <div class="anime-meta">
+                        <% if (anime.score) { %>
+                            <div class="anime-meta-item">
+                                <strong>Rating:</strong> 
+                                <i class="bi bi-star-fill text-warning"></i> <%= anime.score %>/10
+                            </div>
+                        <% } %>
+                        <div class="anime-meta-item">
+                            <strong>Tipe:</strong> <%= anime.type %>
+                        </div>
+                        <% if (anime.episodes) { %>
+                            <div class="anime-meta-item">
+                                <strong>Episode:</strong> <%= anime.episodes %>
+                            </div>
+                        <% } %>
+                        <% if (anime.status) { %>
+                            <div class="anime-meta-item">
+                                <strong>Status:</strong> <%= anime.status %>
+                            </div>
+                        <% } %>
+                        <% if (anime.aired && anime.aired.string) { %>
+                            <div class="anime-meta-item">
+                                <strong>Tayang:</strong> <%= anime.aired.string %>
+                            </div>
+                        <% } %>
+                        <% if (anime.duration) { %>
+                            <div class="anime-meta-item">
+                                <strong>Durasi:</strong> <%= anime.duration %>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <% if (anime.genres && anime.genres.length > 0) { %>
+                        <div class="mb-3">
+                            <strong>Genre:</strong>
+                            <div class="mt-2">
+                                <% anime.genres.forEach(genre => { %>
+                                    <span class="badge bg-primary me-1 mb-1"><%= genre.name %></span>
+                                <% }) %>
+                            </div>
+                        </div>
+                    <% } %>
+                    
+                    <% if (anime.studios && anime.studios.length > 0) { %>
+                        <div class="mb-3">
+                            <strong>Studio:</strong>
+                            <% anime.studios.forEach((studio, index) => { %>
+                                <%= studio.name %><% if (index < anime.studios.length - 1) { %>, <% } %>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                    
+                    <% if (anime.synopsis) { %>
+                        <div class="mb-3">
+                            <strong>Sinopsis:</strong>
+                            <p class="mt-2"><%= anime.synopsis %></p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Trailer Section -->
+    <% if (videos && videos.promo && videos.promo.length > 0) { %>
+        <section class="mb-5">
+            <h3 class="section-title">
+                <i class="bi bi-play-circle text-danger me-2"></i>
+                Trailer & Video
+            </h3>
+            <div class="row g-4">
+                <% videos.promo.slice(0, 4).forEach(video => { %>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="video-card">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="<%= video.trailer.embed_url %>" 
+                                        title="<%= video.title %>"
+                                        allowfullscreen></iframe>
+                            </div>
+                            <div class="video-info mt-2">
+                                <h6><%= video.title %></h6>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </section>
+    <% } %>
+    
+    <!-- Comments Section -->
+    <section class="comments-section">
+        <h3 class="mb-4">
+            <i class="bi bi-chat-dots text-info me-2"></i>
+            Komentar & Diskusi
+        </h3>
+        
+        <!-- Add Comment Form -->
+        <div class="comment-form mb-4">
+            <h5>Tambah Komentar</h5>
+            <form id="commentForm" data-anime-id="<%= anime.mal_id %>">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nama</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Komentar</label>
+                    <textarea class="form-control" id="comment" name="comment" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send me-1"></i>Kirim Komentar
+                </button>
+            </form>
+        </div>
+        
+        <!-- Comments List -->
+        <div id="commentsContainer">
+            <% if (comments && comments.length > 0) { %>
+                <h5 class="mb-3">Komentar (<%= comments.length %>)</h5>
+                <% comments.forEach(comment => { %>
+                    <div class="comment-item">
+                        <div class="comment-author"><%= comment.username %></div>
+                        <div class="comment-content"><%= comment.comment %></div>
+                        <div class="comment-date">
+                            <%= new Date(comment.created_at).toLocaleString('id-ID') %>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="text-center py-4">
+                    <i class="bi bi-chat display-4 text-muted"></i>
+                    <p class="text-muted mt-2">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+                </div>
+            <% } %>
+        </div>
+    </section>
+</div>
+` }) %>
+

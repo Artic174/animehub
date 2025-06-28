@@ -1,0 +1,156 @@
+<%- include('../layout', { body: `
+<div class="container mt-4">
+    <div class="news-header mb-4">
+        <h1 class="display-6">
+            <i class="bi bi-newspaper text-info me-2"></i>
+            Berita Anime
+        </h1>
+        <p class="text-muted">Berita terbaru seputar dunia anime dan manga</p>
+    </div>
+
+    <!-- Error Message -->
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <!-- News List -->
+    <% if (news && news.length > 0) { %>
+        <div class="row g-4">
+            <% news.forEach((article, index) => { %>
+                <div class="col-lg-<%= index === 0 ? '12' : '6' %> col-md-<%= index === 0 ? '12' : '6' %>">
+                    <article class="news-card h-100 <%= index === 0 ? 'featured-news' : '' %>">
+                        <% if (article.image_url) { %>
+                            <div class="news-image">
+                                <img src="<%= article.image_url %>" 
+                                     alt="<%= article.title %>" 
+                                     class="card-img-top"
+                                     style="height: <%= index === 0 ? '300px' : '200px' %>; object-fit: cover;">
+                            </div>
+                        <% } %>
+                        <div class="card-body">
+                            <h<%= index === 0 ? '3' : '5' %> class="card-title">
+                                <a href="/news/<%= article.id %>" class="text-decoration-none">
+                                    <%= article.title %>
+                                </a>
+                            </h<%= index === 0 ? '3' : '5' %>>
+                            
+                            <p class="card-text text-muted">
+                                <%= article.content.substring(0, index === 0 ? 300 : 150) %>...
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="news-meta">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar me-1"></i>
+                                        <%= new Date(article.created_at).toLocaleDateString('id-ID', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        }) %>
+                                    </small>
+                                    <% if (article.updated_at !== article.created_at) { %>
+                                        <small class="text-muted ms-2">
+                                            <i class="bi bi-pencil me-1"></i>
+                                            Diperbarui <%= new Date(article.updated_at).toLocaleDateString('id-ID') %>
+                                        </small>
+                                    <% } %>
+                                </div>
+                                <a href="/news/<%= article.id %>" class="btn btn-outline-primary btn-sm">
+                                    Baca Selengkapnya
+                                    <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                
+                <% if (index === 0) { %>
+                    </div>
+                    <div class="row g-4 mt-2">
+                <% } %>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="no-news text-center py-5">
+            <i class="bi bi-newspaper display-4 text-muted"></i>
+            <h3 class="mt-3">Belum ada berita</h3>
+            <p class="text-muted">
+                Belum ada berita yang dipublikasikan. Silakan kembali lagi nanti.
+            </p>
+            <a href="/" class="btn btn-primary mt-3">
+                <i class="bi bi-house me-1"></i>Kembali ke Beranda
+            </a>
+        </div>
+    <% } %>
+    
+    <!-- Sidebar Info -->
+    <div class="news-sidebar mt-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Pagination could go here -->
+            </div>
+            <div class="col-lg-4">
+                <div class="sidebar-widget p-4 bg-dark bg-opacity-25 rounded">
+                    <h5><i class="bi bi-info-circle text-info me-2"></i>Tentang Berita</h5>
+                    <p class="text-muted small">
+                        Berita di AnimeHub dikelola oleh admin dan berisi informasi terbaru 
+                        seputar dunia anime, manga, dan industri hiburan Jepang.
+                    </p>
+                    <hr>
+                    <h6>Kategori Berita</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="bi bi-dot"></i> Rilis Anime Baru</li>
+                        <li><i class="bi bi-dot"></i> Update Manga</li>
+                        <li><i class="bi bi-dot"></i> Event & Festival</li>
+                        <li><i class="bi bi-dot"></i> Industry News</li>
+                        <li><i class="bi bi-dot"></i> Review & Rekomendasi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.featured-news {
+    border: 2px solid var(--primary-color);
+    position: relative;
+}
+
+.featured-news::before {
+    content: 'FEATURED';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.news-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .news-meta {
+        margin-bottom: 1rem;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+}
+</style>
+` }) %>
+

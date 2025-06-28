@@ -1,0 +1,146 @@
+<%- include('../layout', { body: `
+<div class="container mt-4">
+    <div class="schedule-header mb-4">
+        <h1 class="display-6">
+            <i class="bi bi-calendar-event text-success me-2"></i>
+            Jadwal Anime
+        </h1>
+        <p class="text-muted">Jadwal tayang anime per hari dalam seminggu</p>
+    </div>
+
+    <!-- Day Filter -->
+    <div class="day-filter mb-4">
+        <div class="btn-group" role="group">
+            <a href="/anime/schedule" class="btn <%= selectedDay === 'all' ? 'btn-success' : 'btn-outline-success' %>">
+                Semua Hari
+            </a>
+            <a href="/anime/schedule?day=monday" class="btn <%= selectedDay === 'monday' ? 'btn-success' : 'btn-outline-success' %>">
+                Senin
+            </a>
+            <a href="/anime/schedule?day=tuesday" class="btn <%= selectedDay === 'tuesday' ? 'btn-success' : 'btn-outline-success' %>">
+                Selasa
+            </a>
+            <a href="/anime/schedule?day=wednesday" class="btn <%= selectedDay === 'wednesday' ? 'btn-success' : 'btn-outline-success' %>">
+                Rabu
+            </a>
+            <a href="/anime/schedule?day=thursday" class="btn <%= selectedDay === 'thursday' ? 'btn-success' : 'btn-outline-success' %>">
+                Kamis
+            </a>
+            <a href="/anime/schedule?day=friday" class="btn <%= selectedDay === 'friday' ? 'btn-success' : 'btn-outline-success' %>">
+                Jumat
+            </a>
+            <a href="/anime/schedule?day=saturday" class="btn <%= selectedDay === 'saturday' ? 'btn-success' : 'btn-outline-success' %>">
+                Sabtu
+            </a>
+            <a href="/anime/schedule?day=sunday" class="btn <%= selectedDay === 'sunday' ? 'btn-success' : 'btn-outline-success' %>">
+                Minggu
+            </a>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <% } %>
+
+    <!-- Schedule Content -->
+    <% if (schedule && Object.keys(schedule).length > 0) { %>
+        <% 
+        const dayNames = {
+            'monday': 'Senin',
+            'tuesday': 'Selasa', 
+            'wednesday': 'Rabu',
+            'thursday': 'Kamis',
+            'friday': 'Jumat',
+            'saturday': 'Sabtu',
+            'sunday': 'Minggu'
+        };
+        %>
+        
+        <% Object.keys(schedule).forEach(day => { %>
+            <% if (schedule[day] && schedule[day].length > 0) { %>
+                <div class="schedule-day">
+                    <h3>
+                        <i class="bi bi-calendar-day me-2"></i>
+                        <%= dayNames[day] || day %>
+                        <span class="badge bg-success ms-2"><%= schedule[day].length %> anime</span>
+                    </h3>
+                    
+                    <div class="row g-3">
+                        <% schedule[day].forEach(anime => { %>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="schedule-anime">
+                                    <div class="row align-items-center">
+                                        <div class="col-3">
+                                            <img src="<%= anime.images.jpg.image_url %>" 
+                                                 alt="<%= anime.title %>" 
+                                                 class="img-fluid rounded"
+                                                 style="height: 80px; object-fit: cover;">
+                                        </div>
+                                        <div class="col-9">
+                                            <h6 class="mb-1">
+                                                <a href="/anime/<%= anime.mal_id %>" class="text-decoration-none">
+                                                    <%= anime.title %>
+                                                </a>
+                                            </h6>
+                                            <div class="anime-schedule-info">
+                                                <% if (anime.broadcast && anime.broadcast.time) { %>
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-clock me-1"></i>
+                                                        <%= anime.broadcast.time %> JST
+                                                    </small>
+                                                <% } %>
+                                                <% if (anime.score) { %>
+                                                    <small class="text-warning ms-2">
+                                                        <i class="bi bi-star-fill"></i> <%= anime.score %>
+                                                    </small>
+                                                <% } %>
+                                            </div>
+                                            <div class="anime-genres mt-1">
+                                                <% if (anime.genres && anime.genres.length > 0) { %>
+                                                    <% anime.genres.slice(0, 2).forEach(genre => { %>
+                                                        <span class="badge bg-secondary me-1" style="font-size: 0.7rem;">
+                                                            <%= genre.name %>
+                                                        </span>
+                                                    <% }) %>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            <% } %>
+        <% }) %>
+    <% } else { %>
+        <div class="text-center py-5">
+            <i class="bi bi-calendar-x display-4 text-muted"></i>
+            <h3 class="mt-3">Tidak ada jadwal tersedia</h3>
+            <p class="text-muted">
+                Jadwal anime belum tersedia untuk hari ini atau terjadi kesalahan saat memuat data.
+            </p>
+            <a href="/anime/schedule" class="btn btn-primary mt-3">
+                <i class="bi bi-arrow-clockwise me-1"></i>Muat Ulang
+            </a>
+        </div>
+    <% } %>
+    
+    <!-- Info Section -->
+    <div class="info-section mt-5 p-4 bg-info bg-opacity-10 rounded">
+        <h5><i class="bi bi-info-circle text-info me-2"></i>Informasi Jadwal</h5>
+        <ul class="mb-0">
+            <li>Jadwal menggunakan waktu Jepang (JST)</li>
+            <li>Waktu tayang dapat berubah sewaktu-waktu</li>
+            <li>Klik pada judul anime untuk melihat detail lengkap</li>
+            <li>Data diambil dari MyAnimeList melalui Jikan API</li>
+        </ul>
+    </div>
+</div>
+` }) %>
+

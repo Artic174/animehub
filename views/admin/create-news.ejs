@@ -1,0 +1,405 @@
+<%- include('../layout', { body: `
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-2 col-md-3">
+            <div class="admin-sidebar p-3">
+                <div class="admin-profile mb-4">
+                    <div class="text-center">
+                        <i class="bi bi-person-circle display-6 text-primary"></i>
+                        <h6 class="mt-2 mb-0">Admin</h6>
+                        <strong class="text-primary"><%= admin.username %></strong>
+                    </div>
+                </div>
+                
+                <nav class="admin-nav">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/news/create">
+                                <i class="bi bi-plus-circle me-2"></i>Buat Berita
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/news">
+                                <i class="bi bi-newspaper me-2"></i>Lihat Berita
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                <i class="bi bi-house me-2"></i>Kembali ke Site
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <form action="/admin/logout" method="POST" class="d-inline w-100">
+                                <button type="submit" class="nav-link btn btn-link text-danger w-100 text-start">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-10 col-md-9">
+            <div class="admin-content">
+                <!-- Header -->
+                <div class="admin-header mb-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Buat Berita</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="display-6">
+                        <i class="bi bi-plus-circle text-success me-2"></i>
+                        Buat Berita Baru
+                    </h1>
+                    <p class="text-muted">Tambahkan berita terbaru untuk pengunjung AnimeHub</p>
+                </div>
+                
+                <!-- Error Message -->
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+                
+                <!-- Create News Form -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="admin-card">
+                            <form action="/admin/news/create" method="POST" enctype="multipart/form-data" class="news-form">
+                                <div class="mb-4">
+                                    <label for="title" class="form-label">
+                                        <i class="bi bi-type me-1"></i>Judul Berita *
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg" 
+                                           id="title" 
+                                           name="title" 
+                                           placeholder="Masukkan judul berita yang menarik..."
+                                           required>
+                                    <div class="form-text">Judul yang baik akan menarik perhatian pembaca</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="image" class="form-label">
+                                        <i class="bi bi-image me-1"></i>Gambar Berita
+                                    </label>
+                                    <input type="file" 
+                                           class="form-control" 
+                                           id="image" 
+                                           name="image" 
+                                           accept="image/*">
+                                    <div class="form-text">Format yang didukung: JPG, PNG, GIF, WebP (Max: 5MB)</div>
+                                    <div id="imagePreviewContainer" class="mt-2"></div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="content" class="form-label">
+                                        <i class="bi bi-text-paragraph me-1"></i>Konten Berita *
+                                    </label>
+                                    <textarea class="form-control" 
+                                              id="content" 
+                                              name="content" 
+                                              rows="15" 
+                                              placeholder="Tulis konten berita di sini...
+
+Tips menulis berita yang baik:
+- Gunakan paragraf yang jelas dan mudah dibaca
+- Sertakan informasi yang akurat dan terbaru
+- Gunakan bahasa yang mudah dipahami
+- Tambahkan detail yang relevan dengan topik anime/manga"
+                                              required></textarea>
+                                    <div class="form-text">
+                                        <span id="contentCounter">0</span> karakter
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <div class="d-flex gap-3">
+                                        <button type="submit" class="btn btn-success btn-lg">
+                                            <i class="bi bi-check-circle me-2"></i>
+                                            Publikasikan Berita
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary btn-lg" onclick="resetForm()">
+                                            <i class="bi bi-arrow-clockwise me-2"></i>
+                                            Reset Form
+                                        </button>
+                                        <a href="/admin/dashboard" class="btn btn-outline-primary btn-lg">
+                                            <i class="bi bi-arrow-left me-2"></i>
+                                            Kembali
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar Tips -->
+                    <div class="col-lg-4">
+                        <div class="admin-card">
+                            <h5 class="mb-3">
+                                <i class="bi bi-lightbulb text-warning me-2"></i>
+                                Tips Menulis Berita
+                            </h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <strong>Judul Menarik:</strong> Buat judul yang informatif dan menarik perhatian
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <strong>Gambar Berkualitas:</strong> Gunakan gambar yang relevan dan beresolusi tinggi
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <strong>Konten Terstruktur:</strong> Bagi konten menjadi paragraf yang mudah dibaca
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <strong>Informasi Akurat:</strong> Pastikan semua informasi yang disajikan benar
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <strong>Bahasa Sederhana:</strong> Gunakan bahasa yang mudah dipahami pembaca
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="admin-card mt-4">
+                            <h5 class="mb-3">
+                                <i class="bi bi-tags text-info me-2"></i>
+                                Kategori Berita Populer
+                            </h5>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-primary">Anime Baru</span>
+                                <span class="badge bg-success">Manga Update</span>
+                                <span class="badge bg-warning">Event</span>
+                                <span class="badge bg-info">Review</span>
+                                <span class="badge bg-secondary">Industry News</span>
+                                <span class="badge bg-danger">Breaking News</span>
+                            </div>
+                            <p class="text-muted small mt-3 mb-0">
+                                Gunakan kategori ini sebagai referensi untuk menentukan topik berita
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Character Counter
+document.getElementById('content').addEventListener('input', function() {
+    const counter = document.getElementById('contentCounter');
+    counter.textContent = this.value.length;
+});
+
+// Image Preview
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const container = document.getElementById('imagePreviewContainer');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            container.innerHTML = \`
+                <div class="image-preview mt-2">
+                    <img src="\${e.target.result}" class="img-thumbnail" style="max-width: 300px; max-height: 200px;">
+                    <p class="text-muted small mt-1">Preview: \${file.name} (\${(file.size / 1024 / 1024).toFixed(2)} MB)</p>
+                </div>
+            \`;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        container.innerHTML = '';
+    }
+});
+
+// Reset Form
+function resetForm() {
+    if (confirm('Apakah Anda yakin ingin mereset form? Semua data yang telah diisi akan hilang.')) {
+        document.querySelector('.news-form').reset();
+        document.getElementById('imagePreviewContainer').innerHTML = '';
+        document.getElementById('contentCounter').textContent = '0';
+    }
+}
+
+// Form Validation
+document.querySelector('.news-form').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
+    
+    if (title.length < 10) {
+        e.preventDefault();
+        alert('Judul berita harus minimal 10 karakter');
+        return;
+    }
+    
+    if (content.length < 50) {
+        e.preventDefault();
+        alert('Konten berita harus minimal 50 karakter');
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mempublikasikan...';
+    submitBtn.disabled = true;
+    
+    // Re-enable after timeout as fallback
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 10000);
+});
+
+// Auto-save draft (could be implemented)
+let autoSaveTimer;
+function autoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        
+        if (title || content) {
+            localStorage.setItem('news_draft', JSON.stringify({
+                title: title,
+                content: content,
+                timestamp: new Date().toISOString()
+            }));
+            console.log('Draft saved automatically');
+        }
+    }, 2000);
+}
+
+// Load draft on page load
+window.addEventListener('load', function() {
+    const draft = localStorage.getItem('news_draft');
+    if (draft) {
+        const data = JSON.parse(draft);
+        const timeDiff = new Date() - new Date(data.timestamp);
+        
+        // Only load draft if it's less than 1 hour old
+        if (timeDiff < 3600000) {
+            if (confirm('Ditemukan draft yang belum disimpan. Apakah Anda ingin memulihkannya?')) {
+                document.getElementById('title').value = data.title;
+                document.getElementById('content').value = data.content;
+                document.getElementById('contentCounter').textContent = data.content.length;
+            }
+        }
+    }
+});
+
+// Add auto-save listeners
+document.getElementById('title').addEventListener('input', autoSave);
+document.getElementById('content').addEventListener('input', autoSave);
+
+// Clear draft after successful submission
+document.querySelector('.news-form').addEventListener('submit', function() {
+    localStorage.removeItem('news_draft');
+});
+</script>
+
+<style>
+.admin-sidebar {
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    min-height: calc(100vh - 120px);
+}
+
+.admin-nav .nav-link {
+    color: var(--text-light);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.admin-nav .nav-link:hover,
+.admin-nav .nav-link.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.admin-nav .nav-link.btn {
+    border: none;
+    text-align: left;
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-control {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.form-control:focus {
+    background-color: var(--bg-dark);
+    border-color: var(--primary-color);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-actions {
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+    margin-top: 2rem;
+}
+
+.image-preview {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        margin-bottom: 2rem;
+    }
+    
+    .admin-card {
+        padding: 1rem;
+    }
+    
+    .form-actions .d-flex {
+        flex-direction: column;
+        gap: 1rem !important;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+` }) %>
+

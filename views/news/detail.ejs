@@ -1,0 +1,248 @@
+<%- include('../layout', { body: `
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <article class="news-article">
+                <!-- News Header -->
+                <div class="news-article-header mb-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Beranda</a></li>
+                            <li class="breadcrumb-item"><a href="/news">Berita</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Detail</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="news-title display-5 mb-3">
+                        <%= news.title %>
+                    </h1>
+                    
+                    <div class="news-meta mb-4">
+                        <div class="d-flex flex-wrap align-items-center gap-3">
+                            <span class="text-muted">
+                                <i class="bi bi-calendar me-1"></i>
+                                <%= new Date(news.created_at).toLocaleDateString('id-ID', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) %>
+                            </span>
+                            <% if (news.updated_at !== news.created_at) { %>
+                                <span class="text-muted">
+                                    <i class="bi bi-pencil me-1"></i>
+                                    Diperbarui <%= new Date(news.updated_at).toLocaleDateString('id-ID', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    }) %>
+                                </span>
+                            <% } %>
+                            <span class="text-muted">
+                                <i class="bi bi-person me-1"></i>
+                                Admin AnimeHub
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Featured Image -->
+                <% if (news.image_url) { %>
+                    <div class="news-featured-image mb-4">
+                        <img src="<%= news.image_url %>" 
+                             alt="<%= news.title %>" 
+                             class="img-fluid rounded shadow">
+                    </div>
+                <% } %>
+                
+                <!-- News Content -->
+                <div class="news-content">
+                    <div class="content-body">
+                        <%- news.content.replace(/\n/g, '</p><p>').replace(/^/, '<p>').replace(/$/, '</p>') %>
+                    </div>
+                </div>
+                
+                <!-- Social Share -->
+                <div class="news-share mt-5 pt-4 border-top">
+                    <h6 class="mb-3">
+                        <i class="bi bi-share me-2"></i>Bagikan Berita
+                    </h6>
+                    <div class="d-flex gap-2">
+                        <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(news.title) %>&url=<%= encodeURIComponent('https://animehub.com/news/' + news.id) %>" 
+                           target="_blank" 
+                           class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-twitter"></i> Twitter
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('https://animehub.com/news/' + news.id) %>" 
+                           target="_blank" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="copyToClipboard()">
+                            <i class="bi bi-link-45deg"></i> Salin Link
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="news-navigation mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="/news" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-1"></i>Kembali ke Berita
+                            </a>
+                        </div>
+                        <div class="col-6 text-end">
+                            <a href="/" class="btn btn-outline-secondary">
+                                <i class="bi bi-house me-1"></i>Beranda
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="news-sidebar">
+                <!-- Related News -->
+                <div class="sidebar-widget mb-4">
+                    <div class="widget-header p-3 bg-primary bg-opacity-10 rounded-top">
+                        <h6 class="mb-0">
+                            <i class="bi bi-newspaper me-2"></i>Berita Terkait
+                        </h6>
+                    </div>
+                    <div class="widget-content p-3 bg-dark bg-opacity-25 rounded-bottom">
+                        <p class="text-muted small mb-0">
+                            Fitur berita terkait akan segera hadir. Sementara itu, 
+                            Anda dapat menjelajahi semua berita di halaman utama berita.
+                        </p>
+                        <a href="/news" class="btn btn-sm btn-outline-primary mt-2">
+                            Lihat Semua Berita
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="sidebar-widget mb-4">
+                    <div class="widget-header p-3 bg-success bg-opacity-10 rounded-top">
+                        <h6 class="mb-0">
+                            <i class="bi bi-link-45deg me-2"></i>Link Cepat
+                        </h6>
+                    </div>
+                    <div class="widget-content p-3 bg-dark bg-opacity-25 rounded-bottom">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <a href="/anime/schedule" class="text-decoration-none">
+                                    <i class="bi bi-calendar-event me-2"></i>Jadwal Anime
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="/search" class="text-decoration-none">
+                                    <i class="bi bi-search me-2"></i>Cari Anime
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="/" class="text-decoration-none">
+                                    <i class="bi bi-trophy me-2"></i>Anime Populer
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- About -->
+                <div class="sidebar-widget">
+                    <div class="widget-header p-3 bg-info bg-opacity-10 rounded-top">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Tentang AnimeHub
+                        </h6>
+                    </div>
+                    <div class="widget-content p-3 bg-dark bg-opacity-25 rounded-bottom">
+                        <p class="text-muted small mb-0">
+                            AnimeHub adalah portal informasi anime terlengkap dengan berita terbaru, 
+                            jadwal tayang, dan komunitas otaku Indonesia.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(function() {
+        // Show success message
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check"></i> Tersalin!';
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-success');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-secondary');
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Could not copy text: ', err);
+        alert('Gagal menyalin link');
+    });
+}
+</script>
+
+<style>
+.news-article {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.news-title {
+    color: var(--text-light);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.news-featured-image img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.content-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-light);
+}
+
+.content-body p {
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-widget {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .news-article {
+        padding: 1rem;
+    }
+    
+    .news-title {
+        font-size: 1.75rem;
+    }
+    
+    .content-body {
+        font-size: 1rem;
+    }
+}
+</style>
+` }) %>
+

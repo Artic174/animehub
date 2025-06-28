@@ -1,0 +1,98 @@
+<%- include('layout', { body: `
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 text-center">
+            <div class="error-page">
+                <div class="error-animation mb-4">
+                    <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+                </div>
+                
+                <h1 class="display-4 fw-bold text-light mb-3">404</h1>
+                <h2 class="h4 text-muted mb-4">Halaman Tidak Ditemukan</h2>
+                
+                <p class="text-muted mb-4">
+                    Maaf, halaman yang Anda cari tidak dapat ditemukan. 
+                    Halaman mungkin telah dipindahkan, dihapus, atau URL yang Anda masukkan salah.
+                </p>
+                
+                <div class="error-actions">
+                    <a href="/" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-house me-2"></i>
+                        Kembali ke Beranda
+                    </a>
+                    <a href="/search" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-search me-2"></i>
+                        Cari Anime
+                    </a>
+                </div>
+                
+                <div class="mt-5">
+                    <h5 class="text-light mb-3">Atau coba halaman ini:</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="/anime/schedule" class="list-group-item list-group-item-action bg-dark text-light border-secondary">
+                            <i class="bi bi-calendar-event me-2"></i>
+                            Jadwal Anime
+                        </a>
+                        <a href="/news" class="list-group-item list-group-item-action bg-dark text-light border-secondary">
+                            <i class="bi bi-newspaper me-2"></i>
+                            Berita Anime
+                        </a>
+                        <a href="/search?q=naruto" class="list-group-item list-group-item-action bg-dark text-light border-secondary">
+                            <i class="bi bi-search me-2"></i>
+                            Cari Anime Populer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    padding: 3rem 0;
+}
+
+.error-animation i {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.list-group-item {
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: var(--primary-color) !important;
+    transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    .error-page {
+        padding: 2rem 0;
+    }
+    
+    .error-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .error-actions .me-3 {
+        margin-right: 0 !important;
+    }
+}
+</style>
+` }) %>
+
